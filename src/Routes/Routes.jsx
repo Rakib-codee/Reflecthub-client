@@ -6,6 +6,7 @@ import Register from "../pages/Register"
 import Dashboard from "../Layout/Dashboard"; // Import Dashboard Layout
 import PrivateRoute from "./PrivateRoute"; // Import PrivateRoute
 import AddLesson from "../pages/Dashboard/AddLesson/AddLesson";
+import MyLessons from "../pages/Dashboard/MyLessons/MyLessons";
 
 export const router = createBrowserRouter([
   {
@@ -27,7 +28,7 @@ export const router = createBrowserRouter([
         },
         {
             path: "my-lessons",
-            element: <div>My Lessons Table Coming Soon...</div> // Placeholder
+            element: <MyLessons /> 
         },
         {
             path: "home",

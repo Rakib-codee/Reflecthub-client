@@ -7,7 +7,8 @@ import Dashboard from "../Layout/Dashboard"; // Import Dashboard Layout
 import PrivateRoute from "./PrivateRoute"; // Import PrivateRoute
 import AddLesson from "../pages/Dashboard/AddLesson/AddLesson";
 import MyLessons from "../pages/Dashboard/MyLessons/MyLessons";
-
+import Lessons from "../pages/Lessons/Lessons";
+import LessonDetails from "../pages/Lessons/LessonDetails";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -15,7 +16,16 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "login", element: <Login /> },
-      { path: "register", element: <Register /> }
+      { path: "register", element: <Register /> },
+      {
+        path: "lessons",
+        element: <Lessons />
+      },
+      {
+        path: "lessons/:id",
+        element: <PrivateRoute><LessonDetails /></PrivateRoute>, // Protect this page
+        loader: ({params}) => fetch(`http://localhost:3000/lessons/${params.id}`)
+      }
     ],
   },
   {
@@ -32,7 +42,7 @@ export const router = createBrowserRouter([
         },
         {
             path: "home",
-            element: <div>Dashboard Home Coming Soon...</div> // Placeholder
+            element: <Home /> 
         }
     ]
   }

@@ -18,6 +18,8 @@ import ManageLessons from "../pages/Dashboard/ManageLessons/ManageLessons";
 import MyFavorites from "../pages/Dashboard/MyFavorites/MyFavorites";
 import Community from "../pages/Community/Community";
 import NotFound from "../pages/NotFound/NotFound";
+
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://localhost:3000").replace(/\/$/, "");
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -33,7 +35,7 @@ export const router = createBrowserRouter([
       {
         path: "lessons/:id",
         element: <PrivateRoute><LessonDetails /></PrivateRoute>, // Protect this page
-        loader: ({ params }) => fetch(`http://localhost:3000/lessons/${params.id}`)
+        loader: ({ params }) => fetch(`${API_BASE_URL}/lessons/${params.id}`)
       },
       {
         path: "payment",
@@ -89,7 +91,7 @@ export const router = createBrowserRouter([
       {
         path: "update-lesson/:id",
         element: <UpdateLesson />,
-        loader: ({ params }) => fetch(`http://localhost:3000/lessons/${params.id}`)
+        loader: ({ params }) => fetch(`${API_BASE_URL}/lessons/${params.id}`)
       },
       {
         path: "admin-home",

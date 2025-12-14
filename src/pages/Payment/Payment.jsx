@@ -4,7 +4,7 @@ import CheckoutForm from "./CheckoutForm";
 import { useEffect, useState } from "react";
 
 // TODO: Replace with your actual Publishable Key
-const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_51Sdxd5KRZQaAnYsd1bvDUoZcUks1ObKypZamGYLnuJzqWRvYp3aFetNU0etDwwpQXgld9QebXtgRw9RafsximIgd00FEcc8lqu";
+const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || import.meta.env.VITE_PAYMENT_GATEWAY_PK || "pk_test_51Sdxd5KRZQaAnYsd1bvDUoZcUks1ObKypZamGYLnuJzqWRvYp3aFetNU0etDwwpQXgld9QebXtgRw9RafsximIgd00FEcc8lqu";
 
 const Payment = () => {
     const [stripe, setStripe] = useState(null);

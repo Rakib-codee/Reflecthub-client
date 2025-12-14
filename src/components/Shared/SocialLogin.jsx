@@ -24,6 +24,7 @@ const SocialLogin = ({ redirectTo = "/" }) => {
           photoURL: result.user?.photoURL,
           role: "user",
           isPremium: false,
+          createdAt: new Date(),
         };
         axiosPublic.post(`/users/${encodeURIComponent(email)}`, userInfo).then(() => {
           Swal.fire({

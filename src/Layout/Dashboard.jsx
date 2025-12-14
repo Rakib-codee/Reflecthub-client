@@ -57,7 +57,7 @@ const Dashboard = () => {
                         <>
                             {/* === ADMIN MENU === */}
                             <li className="menu-title text-gray-400 mt-2">Admin Area</li>
-                            <li><NavLink to="/dashboard/admin-home"><FaHome /> Admin Home</NavLink></li>
+                            <li><NavLink to="/dashboard/admin"><FaHome /> Admin Home</NavLink></li>
                             <li><NavLink to="/dashboard/users"><FaUsers /> Manage Users</NavLink></li>
                             <li><NavLink to="/dashboard/my-lessons"><FaList /> My Lessons</NavLink></li>
                             <li><NavLink to="/dashboard/profile"><FaUser /> Admin Profile</NavLink></li>

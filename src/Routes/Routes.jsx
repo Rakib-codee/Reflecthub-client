@@ -49,6 +49,10 @@ export const router = createBrowserRouter([
     element: <PrivateRoute><Dashboard /></PrivateRoute>, // Protect the whole dashboard
     children: [
       {
+        path: "admin",
+        element: <AdminHome></AdminHome>
+      },
+      {
         path: "add-lesson",
         element: <AddLesson />
       },

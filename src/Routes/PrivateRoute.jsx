@@ -1,13 +1,14 @@
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import { Navigate, useLocation } from "react-router-dom";
+import LoadingScreen from "../components/Shared/LoadingScreen";
 
 const PrivateRoute = ({ children }) => {
     const { user, loading } = useContext(AuthContext);
     const location = useLocation();
 
     if (loading) {
-        return <div className="flex justify-center items-center h-screen"><span className="loading loading-spinner loading-lg text-primary"></span></div>
+        return <LoadingScreen title="Checking access" subtitle="Verifying your account and loading the dashboard..." />;
     }
 
     if (user) {

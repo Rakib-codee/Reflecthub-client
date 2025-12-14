@@ -12,6 +12,7 @@ import LessonDetails from "../pages/Lessons/LessonDetails";
 import Payment from "../pages/Payment/Payment";
 import Profile from "../pages/Dashboard/Profile/Profile";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
+import UpdateLesson from "../pages/Dashboard/UpdateLesson/UpdateLesson";
 
 export const router = createBrowserRouter([
   {
@@ -63,7 +64,13 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />
+      },
+      {
+        path: "update-lesson/:id",
+        element: <UpdateLesson />,
+        loader: ({ params }) => fetch(`http://localhost:3000/lessons/${params.id}`)
       }
+
     ]
   }
 ]);

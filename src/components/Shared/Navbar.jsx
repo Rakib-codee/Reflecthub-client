@@ -17,6 +17,7 @@ const Navbar = () => {
         {/* Only show these if user is logged in */}
         {user && <li><NavLink to="/dashboard/my-lessons">My Lessons</NavLink></li>} 
         <li><NavLink to="/community">Community</NavLink></li>
+        <li><NavLink to="/payment">Membership</NavLink></li>
     </>
 
     return (

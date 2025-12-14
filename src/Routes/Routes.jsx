@@ -9,6 +9,9 @@ import AddLesson from "../pages/Dashboard/AddLesson/AddLesson";
 import MyLessons from "../pages/Dashboard/MyLessons/MyLessons";
 import Lessons from "../pages/Lessons/Lessons";
 import LessonDetails from "../pages/Lessons/LessonDetails";
+import Payment from "../pages/Payment/Payment";
+import Profile from "../pages/Dashboard/Profile/Profile";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -24,7 +27,11 @@ export const router = createBrowserRouter([
       {
         path: "lessons/:id",
         element: <PrivateRoute><LessonDetails /></PrivateRoute>, // Protect this page
-        loader: ({params}) => fetch(`http://localhost:3000/lessons/${params.id}`)
+        loader: ({ params }) => fetch(`http://localhost:3000/lessons/${params.id}`)
+      },
+      {
+        path: "payment",
+        element: <PrivateRoute><Payment /></PrivateRoute>
       }
     ],
   },
@@ -32,18 +39,22 @@ export const router = createBrowserRouter([
     path: "dashboard",
     element: <PrivateRoute><Dashboard /></PrivateRoute>, // Protect the whole dashboard
     children: [
-        {
-            path: "add-lesson",
-            element: <AddLesson />
-        },
-        {
-            path: "my-lessons",
-            element: <MyLessons /> 
-        },
-        {
-            path: "home",
-            element: <Home /> 
-        }
+      {
+        path: "add-lesson",
+        element: <AddLesson />
+      },
+      {
+        path: "my-lessons",
+        element: <MyLessons />
+      },
+      {
+        path: "profile",
+        element: <Profile />
+      },
+      {
+        path: "home",
+        element: <Home />
+      }
     ]
   }
 ]);

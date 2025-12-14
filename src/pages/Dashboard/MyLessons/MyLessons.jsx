@@ -13,14 +13,29 @@ const MyLessons = () => {
 
     // 1. Fetch Data
     useEffect(() => {
-        if(user?.email){
-            axiosPublic.get(`/lessons?email=${user.email}`)
+        if (user?.email) {
+            setLoading(true);
+            axiosPublic
+                .get(`/lessons?email=${encodeURIComponent(user.email)}`)
                 .then(res => {
-                    setLessons(res.data);
-                    setLoading(false);
+                    const data = Array.isArray(res.data) ? res.data : [];
+                    const filtered = data.filter(item => {
+                        const authorEmail = item?.author?.email || item?.email || item?.userEmail;
+                        return authorEmail === user.email;
+                    });
+                    setLessons(filtered);
                 })
+                .catch(() => {
+                    setLessons([]);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        } else {
+            setLessons([]);
+            setLoading(false);
         }
-    }, [user, axiosPublic]);
+    }, [user?.email, axiosPublic]);
 
     // 2. Handle Delete
     const handleDelete = (id) => {

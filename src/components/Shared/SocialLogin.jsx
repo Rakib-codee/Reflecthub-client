@@ -1,42 +1,58 @@
 import { useContext } from "react";
-import { FaGoogle } from "react-icons/fa"; // npm install react-icons
+import { FaGoogle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import { AuthContext } from "../../providers/AuthProvider";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
-import { useNavigate } from "react-router-dom";
 
-const SocialLogin = () => {
-    const { googleSignIn } = useContext(AuthContext);
-    const axiosPublic = useAxiosPublic();
-    const navigate = useNavigate();
+const SocialLogin = ({ redirectTo = "/" }) => {
+  const { googleSignIn } = useContext(AuthContext);
+  const axiosPublic = useAxiosPublic();
+  const navigate = useNavigate();
 
-    const handleGoogleSignIn = () => {
-        googleSignIn()
-            .then(result => {
-                const userInfo = {
-                    email: result.user?.email,
-                    name: result.user?.displayName,
-                    photoURL: result.user?.photoURL,
-                    role: 'user', // Default role
-                    isPremium: false // Default plan
-                }
-                // Save user to database
-                axiosPublic.post(`/users/${encodeURIComponent(result.user.email)}`, userInfo)
-                    .then(res => {
-                        console.log(res.data);
-                        navigate('/');
-                    })
-            })
-    }
+  const handleGoogleSignIn = () => {
+    googleSignIn()
+      .then(result => {
+        const email = result?.user?.email;
+        if (!email) {
+          throw new Error("Google sign-in failed: missing user email");
+        }
 
-    return (
-        <div className="p-8 pt-0">
-            <div className="divider">OR</div>
-            <button onClick={handleGoogleSignIn} className="btn btn-outline btn-primary w-full flex items-center gap-2">
-                <FaGoogle />
-                Continue with Google
-            </button>
-        </div>
-    );
+        const userInfo = {
+          email,
+          name: result.user?.displayName,
+          photoURL: result.user?.photoURL,
+          role: "user",
+          isPremium: false,
+        };
+        axiosPublic.post(`/users/${encodeURIComponent(email)}`, userInfo).then(() => {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Logged in with Google",
+            showConfirmButton: false,
+            timer: 1200,
+          });
+          navigate(redirectTo, { replace: true });
+        });
+      })
+      .catch(err => {
+        Swal.fire({
+          icon: "error",
+          title: "Google sign-in failed",
+          text: err.message,
+        });
+      });
+  };
+
+  return (
+    <button
+      onClick={handleGoogleSignIn}
+      className="btn btn-outline btn-primary w-full flex items-center gap-2 rounded-full"
+    >
+      <FaGoogle /> Continue with Google
+    </button>
+  );
 };
 
 export default SocialLogin;

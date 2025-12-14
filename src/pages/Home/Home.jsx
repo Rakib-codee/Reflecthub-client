@@ -11,11 +11,13 @@ const Home = () => {
             <Banner />
             <About />
              <HowItWorks></HowItWorks>
+             <FeaturedLessons />
             <Stats />
             <Testimonials></Testimonials>
+             {/* We will add "Featured Lessons" here later once we have data */}
             <CTASection></CTASection>
-            {/* We will add "Featured Lessons" here later once we have data */}
-            <FeaturedLessons />
+            
+           
         </div>
     );
 };

@@ -11,6 +11,7 @@ import Lessons from "../pages/Lessons/Lessons";
 import LessonDetails from "../pages/Lessons/LessonDetails";
 import Payment from "../pages/Payment/Payment";
 import Profile from "../pages/Dashboard/Profile/Profile";
+import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ export const router = createBrowserRouter([
       {
         path: "home",
         element: <Home />
+      },
+      {
+        path: "users",
+        element:  <AllUsers />
       }
     ]
   }

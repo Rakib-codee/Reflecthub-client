@@ -1,13 +1,14 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { FaBook, FaHome, FaList, FaPlus, FaUser, FaUsers } from "react-icons/fa";
+import { FaBook, FaHome, FaList, FaPlus, FaUser, FaUsers, FaCrown } from "react-icons/fa";
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
+import useAdmin from "../hooks/useAdmin"; // Import the Admin Hook
 
 const Dashboard = () => {
     const { user } = useContext(AuthContext);
-
-    // TODO: Later we will fetch from DB to see if user is Admin
-    const isAdmin = false; 
+    
+    // 👇 GET REAL ADMIN STATUS FROM DB
+    const [isAdmin] = useAdmin(); 
 
     return (
         <div className="drawer lg:drawer-open">
@@ -30,26 +31,34 @@ const Dashboard = () => {
                         <p className="text-xs text-gray-500">Dashboard Panel</p>
                     </div>
 
-                    {/* User Links */}
-                    {!isAdmin && <>
-                        <li><NavLink to="/dashboard/home"><FaHome /> User Home</NavLink></li>
-                        <li><NavLink to="/dashboard/add-lesson"><FaPlus /> Add Lesson</NavLink></li>
-                        <li><NavLink to="/dashboard/my-lessons"><FaList /> My Lessons</NavLink></li>
-                        <li><NavLink to="/dashboard/my-favorites"><FaBook /> My Favorites</NavLink></li>
-                        <li><NavLink to="/dashboard/profile"><FaUser /> Profile</NavLink></li>
-                    </>}
-
-                    {/* Admin Links (We will enable these later) */}
-                    {isAdmin && <>
-                        <li><NavLink to="/dashboard/admin"><FaHome /> Admin Home</NavLink></li>
-                        <li><NavLink to="/dashboard/users"><FaUsers /> Manage Users</NavLink></li>
-                    </>}
+                    {/* 👇 CONDITIONAL MENU RENDERING */}
+                    
+                    {isAdmin ? (
+                        <>
+                            {/* === ADMIN MENU === */}
+                            <li className="menu-title text-gray-400 mt-2">Admin Area</li>
+                            <li><NavLink to="/dashboard/admin-home"><FaHome /> Admin Home</NavLink></li>
+                            <li><NavLink to="/dashboard/users"><FaUsers /> Manage Users</NavLink></li>
+                            <li><NavLink to="/dashboard/profile"><FaUser /> Admin Profile</NavLink></li>
+                        </>
+                    ) : (
+                        <>
+                            {/* === USER MENU === */}
+                            <li className="menu-title text-gray-400 mt-2">User Area</li>
+                            <li><NavLink to="/dashboard/home"><FaHome /> User Home</NavLink></li>
+                            <li><NavLink to="/dashboard/add-lesson"><FaPlus /> Add Lesson</NavLink></li>
+                            <li><NavLink to="/dashboard/my-lessons"><FaList /> My Lessons</NavLink></li>
+                            <li><NavLink to="/dashboard/my-favorites"><FaBook /> My Favorites</NavLink></li>
+                            <li><NavLink to="/dashboard/profile"><FaUser /> Profile</NavLink></li>
+                        </>
+                    )}
 
                     <div className="divider"></div> 
                     
-                    {/* Shared Links */}
+                    {/* === SHARED MENU === */}
                     <li><NavLink to="/"><FaHome /> Home</NavLink></li>
                     <li><NavLink to="/lessons"><FaBook /> Public Lessons</NavLink></li>
+                    <li><NavLink to="/payment"><FaCrown /> Membership</NavLink></li>
                 </ul>
             
             </div>

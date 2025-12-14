@@ -10,7 +10,7 @@ const Dashboard = () => {
     const { user } = useContext(AuthContext);
 
     // 👇 GET REAL ADMIN STATUS FROM DB
-    const [isAdmin] = useAdmin();
+    const [isAdmin, isAdminLoading] = useAdmin();
     const [isPremium, isPremiumLoading] = usePremium();
     const navigate = useNavigate();
 
@@ -53,7 +53,9 @@ const Dashboard = () => {
 
                     {/* 👇 CONDITIONAL MENU RENDERING */}
 
-                    {isAdmin ? (
+                    {isAdminLoading ? (
+                        <li className="menu-title text-gray-400 mt-2">Loading...</li>
+                    ) : isAdmin ? (
                         <>
                             {/* === ADMIN MENU === */}
                             <li className="menu-title text-gray-400 mt-2">Admin Area</li>

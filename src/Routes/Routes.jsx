@@ -19,7 +19,17 @@ import MyFavorites from "../pages/Dashboard/MyFavorites/MyFavorites";
 import Community from "../pages/Community/Community";
 import NotFound from "../pages/NotFound/NotFound";
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://localhost:3000").replace(/\/$/, "");
+const API_BASE_URL = (() => {
+  const envBaseUrl = import.meta.env.VITE_API_BASE_URL;
+  if (envBaseUrl) return envBaseUrl.replace(/\/$/, "");
+
+  if (import.meta.env.DEV) return "http://localhost:3000";
+
+  console.error(
+    "Missing VITE_API_BASE_URL. Route loader requests will likely fail in production. Set it in your deploy environment variables."
+  );
+  return "";
+})();
 export const router = createBrowserRouter([
   {
     path: "/",

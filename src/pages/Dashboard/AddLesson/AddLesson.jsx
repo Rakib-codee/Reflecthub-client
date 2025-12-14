@@ -1,18 +1,19 @@
 import { useForm } from "react-hook-form";
-import useAxiosPublic from "../../../hooks/useAxiosPublic"; // We will switch to Secure Axios later
+import useAxiosPublic from "../../../hooks/useAxiosPublic"; 
 import Swal from "sweetalert2";
 import { useContext } from "react";
 import { AuthContext } from "../../../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import usePremium from "../../../hooks/usePremium"; // Import the hook
 
 const AddLesson = () => {
     const { register, handleSubmit, reset } = useForm();
     const { user } = useContext(AuthContext);
     const axiosPublic = useAxiosPublic();
     const navigate = useNavigate();
-
-    // TODO: Fetch from DB if user is Premium. For now, we assume false.
-    const isPremiumUser = false; 
+    
+    // 👇 GET REAL PREMIUM STATUS HERE
+    const [isPremium] = usePremium(); 
 
     const onSubmit = async (data) => {
         
@@ -21,7 +22,7 @@ const AddLesson = () => {
             description: data.description,
             category: data.category,
             tone: data.tone,
-            photoURL: data.photoURL, // Optional
+            photoURL: data.photoURL,
             privacy: data.privacy,
             access: data.access, // Free or Premium
             author: {
@@ -29,8 +30,8 @@ const AddLesson = () => {
                 email: user?.email,
                 photo: user?.photoURL
             },
-            createdAt: new Date(),
-            likes: [], // Array to store user emails who liked
+            createdAt: new Date(), // We store date to sort later
+            likes: [],
             likesCount: 0
         }
 
@@ -109,16 +110,20 @@ const AddLesson = () => {
                         <select 
                             {...register("access", {required: true})} 
                             className="select select-bordered w-full"
-                            // If user is NOT premium, force them to select Free (we can add validation later too)
+                            defaultValue="Free"
                         >
                             <option value="Free">Free</option>
-                            <option value="Premium" disabled={!isPremiumUser}>Premium (Upgrade Required)</option>
+                            
+                            {/* 👇 DYNAMICALLY DISABLE BASED ON DB STATUS */}
+                            <option value="Premium" disabled={!isPremium}>
+                                Premium {isPremium ? "" : "(Upgrade Required)"}
+                            </option>
                         </select>
-                        {!isPremiumUser && <span className="text-xs text-gray-500 mt-1">Upgrade to Premium to create paid content.</span>}
+                        {!isPremium && <span className="text-xs text-red-500 mt-1">Upgrade to Premium to create paid content.</span>}
                     </div>
                 </div>
 
-                {/* Image URL (Optional) */}
+                {/* Image URL */}
                 <div className="form-control w-full">
                     <label className="label"><span className="label-text font-semibold">Image URL (Optional)</span></label>
                     <input type="text" {...register("photoURL")} placeholder="https://..." className="input input-bordered w-full" />

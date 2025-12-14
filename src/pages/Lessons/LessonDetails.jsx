@@ -1,13 +1,40 @@
-import { useLoaderData } from "react-router-dom";
-import { FaCalendarAlt, FaUserCircle, FaHeart, FaBookmark } from "react-icons/fa";
+import { useLoaderData, Link } from "react-router-dom";
+import { FaCalendarAlt, FaUserCircle, FaHeart, FaBookmark, FaLock, FaCrown } from "react-icons/fa";
+import usePremium from "../../hooks/usePremium"; // Make sure this path is correct
 
 const LessonDetails = () => {
-    // We will use "loader" in the Router to fetch data before rendering
+    // 1. Get Data
     const lesson = useLoaderData(); 
-    
-    const { title, description, author, category, tone, photoURL, createdAt } = lesson;
+    const [isPremium, isPremiumLoading] = usePremium(); // Check User Status
 
-    // Format Date
+    const { title, description, author, category, tone, photoURL, createdAt, access } = lesson;
+
+    // 2. Loading State (Wait for user status check)
+    if (isPremiumLoading) {
+        return <div className="flex justify-center items-center h-screen"><span className="loading loading-spinner loading-lg text-primary"></span></div>;
+    }
+
+    // 🔒 3. LOCK LOGIC (The New Part)
+    // If Lesson is Premium AND User is NOT Premium -> Block Access
+    if (access === 'Premium' && !isPremium) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 mt-10">
+                <div className="bg-gray-100 p-10 rounded-3xl border border-gray-200 shadow-sm max-w-2xl w-full">
+                    <FaLock className="text-6xl text-gray-400 mb-6 mx-auto" />
+                    <h2 className="text-4xl font-bold text-gray-800">Premium Content</h2>
+                    <p className="text-lg text-gray-600 mt-4 mb-8">
+                        This lesson contains exclusive insights locked for Premium members. 
+                        Upgrade to access unlimited wisdom.
+                    </p>
+                    <Link to="/payment" className="btn btn-primary btn-lg text-white gap-2 rounded-full px-10 shadow-lg hover:shadow-xl transition-all">
+                        <FaCrown className="text-yellow-300" /> Upgrade Now - ৳1500
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
+    // 🔓 4. STANDARD UI (Your Original Code for Unlocked Users)
     const date = new Date(createdAt).toLocaleDateString();
 
     return (
@@ -18,6 +45,7 @@ const LessonDetails = () => {
                 <div className="flex justify-center gap-2 mb-4">
                     <span className="badge badge-primary badge-outline">{category}</span>
                     <span className="badge badge-secondary badge-outline">{tone}</span>
+                    {access === 'Premium' && <span className="badge badge-warning text-white gap-1"><FaCrown size={10}/> Premium</span>}
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold text-gray-800 leading-tight">{title}</h1>
                 <div className="flex items-center justify-center gap-2 text-gray-500 text-sm">
@@ -29,7 +57,7 @@ const LessonDetails = () => {
 
             {/* Featured Image */}
             {photoURL && (
-                <div className="w-full h-[400px] rounded-2xl overflow-hidden mb-10 shadow-lg">
+                <div className="w-full h-[400px] rounded-2xl overflow-hidden mb-10 shadow-lg bg-gray-100">
                     <img src={photoURL} alt={title} className="w-full h-full object-cover" />
                 </div>
             )}
@@ -40,7 +68,7 @@ const LessonDetails = () => {
                 {/* whitespace-pre-wrap preserves paragraphs/line breaks from the textarea */}
             </div>
 
-            {/* Interaction Buttons (Placeholder for Phase 3) */}
+            {/* Interaction Buttons */}
             <div className="divider my-10"></div>
             <div className="flex justify-between items-center">
                 <div className="flex gap-4">

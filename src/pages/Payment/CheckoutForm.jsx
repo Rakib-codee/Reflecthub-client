@@ -3,7 +3,8 @@ import { useEffect, useState, useContext } from "react";
 import useAxiosPublic from "../../hooks/useAxiosPublic"; // We will use Secure later
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CheckoutForm = () => {
     const [error, setError] = useState('');
@@ -15,9 +16,12 @@ const CheckoutForm = () => {
     const elements = useElements();
     const axiosPublic = useAxiosPublic();
     const { user } = useContext(AuthContext);
+    const location = useLocation();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const price = 1500; // Price in BDT (or cents if USD)
+    const from = location?.state?.from || '/';
 
     // 1. Create Payment Intent on Component Mount
     useEffect(() => {
@@ -128,7 +132,9 @@ const CheckoutForm = () => {
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    navigate('/dashboard/profile');
+                    queryClient.setQueryData([user?.email, 'isPremium'], true);
+                    queryClient.invalidateQueries({ queryKey: [user?.email, 'isPremium'] });
+                    navigate(from, { replace: true });
                 } else {
                     setError('Payment succeeded, but saving the payment failed. Please contact support.');
                 }

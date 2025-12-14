@@ -3,6 +3,7 @@ import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import { FaLock, FaSearch, FaUser } from "react-icons/fa";
+import usePremium from "../../hooks/usePremium";
 
 const Lessons = () => {
     const [lessons, setLessons] = useState([]);
@@ -16,7 +17,7 @@ const Lessons = () => {
 
     // TODO: Later we will fetch real Premium status from DB. 
     // For now, we assume user is NOT Premium to test the Lock feature.
-    const isPremiumUser = false; 
+    const [isPremiumUser] = usePremium(); 
 
     useEffect(() => {
         axiosPublic.get('/lessons')
@@ -122,15 +123,9 @@ const Lessons = () => {
                                     If Lesson is Premium AND User is Premium -> Show Button
                                     If Lesson is Premium AND User is NOT Premium -> Show Upgrade 
                                 */}
-                                {lesson.access === 'Free' || isPremiumUser ? (
-                                    <Link to={`/lessons/${lesson._id}`} className="btn btn-primary btn-sm text-white rounded-full px-6">
-                                        Read More
-                                    </Link>
-                                ) : (
-                                    <button disabled className="btn btn-disabled btn-sm rounded-full bg-gray-200">
-                                        <FaLock /> Locked
-                                    </button>
-                                )}
+                                <Link to={`/lessons/${lesson._id}`} className={`btn btn-sm text-white rounded-full px-6 ${lesson.access === 'Premium' && !isPremiumUser ? 'btn-warning' : 'btn-primary'}`}>
+                                    {lesson.access === 'Premium' && !isPremiumUser ? (<><FaLock /> View</>) : 'Read More'}
+                                </Link>
                             </div>
                         </div>
                     </div>

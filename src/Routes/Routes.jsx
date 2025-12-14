@@ -14,6 +14,7 @@ import Profile from "../pages/Dashboard/Profile/Profile";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import UpdateLesson from "../pages/Dashboard/UpdateLesson/UpdateLesson";
 import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
+import Community from "../pages/Community/Community";
 
 export const router = createBrowserRouter([
   {
@@ -35,7 +36,11 @@ export const router = createBrowserRouter([
       {
         path: "payment",
         element: <PrivateRoute><Payment /></PrivateRoute>
-      }
+      },
+       {
+        path: "community",
+        element: <Community></Community>
+    }
     ],
   },
   {

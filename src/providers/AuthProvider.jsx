@@ -1,5 +1,5 @@
 // src/providers/AuthProvider.jsx
-import { useEffect, useState, createContext } from "react";
+import { useEffect, useState } from "react";
 import { 
     GoogleAuthProvider, 
     createUserWithEmailAndPassword, 
@@ -11,9 +11,7 @@ import {
 } from "firebase/auth";
 
 import { auth } from "../components/firebase.config";
-
-// ✅ Create AuthContext (named export)
-export const AuthContext = createContext();
+import { AuthContext } from "../contexts/AuthContext";
 
 // ✅ AuthProvider component (named export)
 export const AuthProvider = ({ children }) => {

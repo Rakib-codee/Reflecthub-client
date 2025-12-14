@@ -3,7 +3,7 @@ import { useLoaderData, Link } from "react-router-dom";
 import { FaCalendarAlt, FaUserCircle, FaHeart, FaBookmark, FaLock, FaCrown } from "react-icons/fa";
 import usePremium from "../../hooks/usePremium"; 
 import useAdmin from "../../hooks/useAdmin"; // 👈 IMPORT ADMIN HOOK
-import { AuthContext } from "../../providers/AuthProvider"; 
+import { AuthContext } from "../../contexts/AuthContext"; 
 
 const LessonDetails = () => {
     const lesson = useLoaderData(); 

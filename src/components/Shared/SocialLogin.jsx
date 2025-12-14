@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { AuthContext } from "../../providers/AuthProvider";
+import { AuthContext } from "../../contexts/AuthContext";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const SocialLogin = ({ redirectTo = "/" }) => {

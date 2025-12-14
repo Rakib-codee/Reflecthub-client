@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import SocialLogin from "../components/Shared/SocialLogin";
 import { FiEye, FiEyeOff, FiCheckCircle, FiXCircle, FiMail, FiUser, FiImage } from "react-icons/fi";
-import { AuthContext } from "../providers/AuthProvider";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Register = () => {
     const { createUser, updateUserProfile } = useContext(AuthContext);

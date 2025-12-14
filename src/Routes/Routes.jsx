@@ -14,6 +14,7 @@ import Profile from "../pages/Dashboard/Profile/Profile";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import UpdateLesson from "../pages/Dashboard/UpdateLesson/UpdateLesson";
 import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
+import ManageLessons from "../pages/Dashboard/ManageLessons/ManageLessons";
 import Community from "../pages/Community/Community";
 import NotFound from "../pages/NotFound/NotFound";
 export const router = createBrowserRouter([
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
       {
         path: "users",
         element: <AllUsers />
+      },
+      {
+        path: "manage-lessons",
+        element: <ManageLessons />
       },
       {
         path: "profile",

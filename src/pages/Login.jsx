@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { AuthContext } from "../providers/AuthProvider";
+import { AuthContext } from "../contexts/AuthContext";
 import SocialLogin from "../components/Shared/SocialLogin";
 import { FiEye, FiEyeOff, FiMail, FiLock } from "react-icons/fi";
 

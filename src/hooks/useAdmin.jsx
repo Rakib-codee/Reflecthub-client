@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../providers/AuthProvider";
+import { AuthContext } from "../contexts/AuthContext";
 import useAxiosPublic from "./useAxiosPublic"; // Switch to Secure later
 import { useQuery } from "@tanstack/react-query";
 

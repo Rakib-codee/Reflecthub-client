@@ -1,20 +1,23 @@
 import Banner from "../Home/Banner/Banner";
 import About from "../Home/About/About";
 import Stats from "../Home/Stats/Stats";
-import FeaturedLessons from "../Home/FeaturedLessons/FeaturedLessons"; // 👈 Import This
 import HowItWorks from "./HowItWorks/HowItWorks";
 import Testimonials from "./Testimonials/Testimonials";
 import CTASection from "./CTASection/CTASection";
+import WhyLifeMatters from "./WhyLifeMatters/WhyLifeMatters";
+import TopContributors from "./TopContributors/TopContributors";
+import MostSavedLessons from "./MostSavedLessons/MostSavedLessons";
 const Home = () => {
     return (
         <div className="bg-white"> {/* Ensure background is white/clean */}
             <Banner />
             <About />
              <HowItWorks></HowItWorks>
-             <FeaturedLessons />
+             <WhyLifeMatters />
             <Stats />
+             <TopContributors />
+             <MostSavedLessons />
             <Testimonials></Testimonials>
-             {/* We will add "Featured Lessons" here later once we have data */}
             <CTASection></CTASection>
             
            

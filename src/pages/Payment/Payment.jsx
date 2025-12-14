@@ -31,7 +31,7 @@ const Payment = () => {
                 }
 
                 setStripe(stripeInstance);
-            } catch (e) {
+            } catch {
                 if (!isMounted) return;
                 setStripeError('Failed to load Stripe.js. Please check your network/VPN/ad-blocker and try again.');
             } finally {

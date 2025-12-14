@@ -1,7 +1,7 @@
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useEffect, useState, useContext } from "react";
 import useAxiosPublic from "../../hooks/useAxiosPublic"; // We will use Secure later
-import { AuthContext } from "../../providers/AuthProvider";
+import { AuthContext } from "../../contexts/AuthContext";
 import Swal from "sweetalert2";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";

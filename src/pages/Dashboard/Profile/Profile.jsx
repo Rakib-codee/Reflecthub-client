@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { AuthContext } from "../../../providers/AuthProvider";
+import { AuthContext } from "../../../contexts/AuthContext";
 import useAdmin from "../../../hooks/useAdmin";
 import usePremium from "../../../hooks/usePremium";
 import { FaCrown, FaShieldAlt, FaUser, FaEdit } from "react-icons/fa";
@@ -12,7 +12,7 @@ const Profile = () => {
     const [isAdmin] = useAdmin();
     const [isPremium] = usePremium();
     const axiosPublic = useAxiosPublic();
-    const { register, handleSubmit, reset } = useForm();
+    const { register, handleSubmit } = useForm();
     const [loading, setLoading] = useState(false);
 
     // Handle Update Profile
@@ -62,7 +62,15 @@ const Profile = () => {
                 <div className="relative -mt-16 mb-6">
                     <div className="avatar online">
                         <div className="w-32 rounded-full ring ring-white ring-offset-base-100 ring-offset-2">
-                            <img src={user?.photoURL || "https://i.ibb.co/de/avatar.png"} alt="Profile" className="object-cover" />
+                            <img
+                                src={user?.photoURL || "https://i.ibb.co/de/avatar.png"}
+                                alt="Profile"
+                                className="object-cover"
+                                referrerPolicy="no-referrer"
+                                onError={(e) => {
+                                    e.currentTarget.src = "https://i.ibb.co/de/avatar.png";
+                                }}
+                            />
                         </div>
                     </div>
                     

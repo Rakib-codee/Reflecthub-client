@@ -1,36 +1,41 @@
-import { useEffect, useState } from "react";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
 import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
 
 const FeaturedLessons = () => {
-    const [lessons, setLessons] = useState([]);
     const axiosPublic = useAxiosPublic();
 
-    useEffect(() => {
-        axiosPublic.get('/lessons')
-            .then(res => {
-                // আমরা শুধুমাত্র প্রথম ৬টি লেসন দেখাবো
-                const latestLessons = res.data.slice(0, 6);
-                setLessons(latestLessons);
-            })
-    }, [axiosPublic]);
+    const { data: lessons = [], isPending } = useQuery({
+        queryKey: ['lessons'],
+        queryFn: async () => {
+            const res = await axiosPublic.get('/lessons');
+            return Array.isArray(res.data) ? res.data : [];
+        }
+    });
+
+    const publicLessons = lessons.filter(l => (l?.privacy || '').toLowerCase() === 'public');
+
+    const featuredLessons = publicLessons.filter(l => Boolean(l?.featured)).slice(0, 6);
+    const latestLessons = publicLessons.slice(0, 6);
+    const displayLessons = featuredLessons.length > 0 ? featuredLessons : latestLessons;
+    const isShowingFeatured = featuredLessons.length > 0;
 
     return (
         <div className="py-20 max-w-screen-2xl mx-auto px-4">
-            {/* Section Header */}
             <div className="text-center mb-12">
                 <span className="text-primary font-bold tracking-widest uppercase text-sm">Community Wisdom</span>
-                <h2 className="text-4xl font-bold text-gray-800 mt-2">Latest Life Lessons</h2>
-                <p className="text-gray-500 mt-2">Discover the most recent insights shared by our community.</p>
+                <h2 className="text-4xl font-bold text-gray-800 mt-2">{isShowingFeatured ? 'Featured Life Lessons' : 'Latest Life Lessons'}</h2>
+                <p className="text-gray-500 mt-2">{isShowingFeatured ? 'Handpicked lessons curated by our admins.' : 'Discover the most recent insights shared by our community.'}</p>
             </div>
 
-            {/* Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {lessons.map(lesson => (
+            {isPending ? (
+                <div className="text-center mt-10"><span className="loading loading-bars loading-lg text-primary"></span></div>
+            ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {displayLessons.map(lesson => (
                     <div key={lesson._id} className="card bg-base-100 shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300">
                         
-                        {/* Image */}
                         <figure className="h-48 overflow-hidden bg-gray-100">
                             {lesson.photoURL ? (
                                 <img src={lesson.photoURL} alt={lesson.title} className="w-full h-full object-cover" />
@@ -48,10 +53,10 @@ const FeaturedLessons = () => {
                             </div>
                             
                             <h2 className="card-title text-xl font-bold text-gray-700 mt-2">
-                                {lesson.title.slice(0, 40)}...
+                                {String(lesson.title || '').length > 40 ? `${String(lesson.title).slice(0, 40)}...` : (lesson.title || 'Untitled')}
                             </h2>
                             <p className="text-gray-500 text-sm">
-                                {lesson.description.slice(0, 80)}...
+                                {String(lesson.description || '').length > 80 ? `${String(lesson.description).slice(0, 80)}...` : (lesson.description || '')}
                             </p>
 
                             <div className="flex items-center gap-2 mt-4 text-xs text-gray-400">
@@ -65,8 +70,13 @@ const FeaturedLessons = () => {
                             </div>
                         </div>
                     </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            )}
+
+            {!isPending && displayLessons.length === 0 && (
+                <p className="text-center text-gray-400 mt-10">No lessons found.</p>
+            )}
 
             {/* View All Button */}
             <div className="text-center mt-12">

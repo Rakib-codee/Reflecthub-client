@@ -1,7 +1,6 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../providers/AuthProvider";
 import { FaLock, FaSearch, FaUser } from "react-icons/fa";
 import usePremium from "../../hooks/usePremium";
 
@@ -9,11 +8,9 @@ const Lessons = () => {
     const [lessons, setLessons] = useState([]);
     const [displayLessons, setDisplayLessons] = useState([]); // Used for filtering
     const [search, setSearch] = useState('');
-    const [category, setCategory] = useState('');
     const [loading, setLoading] = useState(true);
     
     const axiosPublic = useAxiosPublic();
-    const { user } = useContext(AuthContext);
 
     // TODO: Later we will fetch real Premium status from DB. 
     // For now, we assume user is NOT Premium to test the Lock feature.
@@ -40,7 +37,6 @@ const Lessons = () => {
     // Handle Filter
     const handleFilter = (e) => {
         const val = e.target.value;
-        setCategory(val);
         if(val === 'All') {
             setDisplayLessons(lessons);
         } else {

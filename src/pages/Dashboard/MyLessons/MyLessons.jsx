@@ -1,41 +1,31 @@
-import { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../../../providers/AuthProvider";
+import { useContext } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
 import useAxiosPublic from "../../../hooks/useAxiosPublic"; // We will switch to Secure later
 import Swal from "sweetalert2";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 const MyLessons = () => {
     const { user } = useContext(AuthContext);
     const axiosPublic = useAxiosPublic();
-    const [lessons, setLessons] = useState([]);
-    const [loading, setLoading] = useState(true);
 
-    // 1. Fetch Data
-    useEffect(() => {
-        if (user?.email) {
-            setLoading(true);
-            axiosPublic
-                .get(`/lessons?email=${encodeURIComponent(user.email)}`)
-                .then(res => {
-                    const data = Array.isArray(res.data) ? res.data : [];
-                    const filtered = data.filter(item => {
-                        const authorEmail = item?.author?.email || item?.email || item?.userEmail;
-                        return authorEmail === user.email;
-                    });
-                    setLessons(filtered);
-                })
-                .catch(() => {
-                    setLessons([]);
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
-        } else {
-            setLessons([]);
-            setLoading(false);
+    const {
+        data: lessons = [],
+        isPending: loading,
+        refetch
+    } = useQuery({
+        queryKey: ['my-lessons', user?.email],
+        enabled: !!user?.email,
+        queryFn: async () => {
+            const res = await axiosPublic.get(`/lessons?email=${encodeURIComponent(user.email)}`);
+            const data = Array.isArray(res.data) ? res.data : [];
+            return data.filter(item => {
+                const authorEmail = item?.author?.email || item?.email || item?.userEmail;
+                return authorEmail === user.email;
+            });
         }
-    }, [user?.email, axiosPublic]);
+    });
 
     // 2. Handle Delete
     const handleDelete = (id) => {
@@ -57,9 +47,7 @@ const MyLessons = () => {
                                 text: "Your lesson has been deleted.",
                                 icon: "success"
                             });
-                            // Remove from UI immediately
-                            const remaining = lessons.filter(item => item._id !== id);
-                            setLessons(remaining);
+                            refetch();
                         }
                     })
             }

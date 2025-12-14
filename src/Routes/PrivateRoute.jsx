@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../providers/AuthProvider";
+import { AuthContext } from "../contexts/AuthContext";
 import { Navigate, useLocation } from "react-router-dom";
 import LoadingScreen from "../components/Shared/LoadingScreen";
 

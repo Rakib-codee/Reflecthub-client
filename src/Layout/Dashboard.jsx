@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { FaBook, FaHome, FaList, FaPlus, FaUser, FaUsers, FaCrown } from "react-icons/fa";
+import { FaBook, FaHome, FaList, FaPlus, FaUser, FaUsers, FaCrown, FaStar } from "react-icons/fa";
 import { useContext } from "react";
-import { AuthContext } from "../providers/AuthProvider";
+import { AuthContext } from "../contexts/AuthContext";
 import useAdmin from "../hooks/useAdmin"; // Import the Admin Hook
 import usePremium from "../hooks/usePremium";
 import Swal from "sweetalert2";
@@ -59,6 +59,7 @@ const Dashboard = () => {
                             <li className="menu-title text-gray-400 mt-2">Admin Area</li>
                             <li><NavLink to="/dashboard/admin"><FaHome /> Admin Home</NavLink></li>
                             <li><NavLink to="/dashboard/users"><FaUsers /> Manage Users</NavLink></li>
+                            <li><NavLink to="/dashboard/manage-lessons"><FaStar /> Manage Lessons</NavLink></li>
                             <li><NavLink to="/dashboard/my-lessons"><FaList /> My Lessons</NavLink></li>
                             <li><NavLink to="/dashboard/profile"><FaUser /> Admin Profile</NavLink></li>
                         </>

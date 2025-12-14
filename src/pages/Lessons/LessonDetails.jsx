@@ -5,7 +5,7 @@ import usePremium from "../../hooks/usePremium";
 import useAdmin from "../../hooks/useAdmin"; // 👈 IMPORT ADMIN HOOK
 import { AuthContext } from "../../contexts/AuthContext"; 
 import Swal from "sweetalert2";
-import { getStorageKeys, isIdInSet, toggleIdInSet } from "../../utils/lessonReactions";
+import { getCountKeys, getLessonCount, getStorageKeys, isIdInSet, toggleReactionWithCount } from "../../utils/lessonReactions";
 
 const LessonDetails = () => {
     const lesson = useLoaderData(); 
@@ -18,14 +18,25 @@ const LessonDetails = () => {
     const { title, description, author, category, tone, photoURL, createdAt, access, _id } = lesson;
 
     const { likedKey, savedKey } = useMemo(() => getStorageKeys(user?.email), [user?.email]);
+    const { likeCountKey, saveCountKey } = useMemo(() => getCountKeys(), []);
 
     const [liked, setLiked] = useState(() => (_id ? isIdInSet(likedKey, _id) : false));
     const [saved, setSaved] = useState(() => (_id ? isIdInSet(savedKey, _id) : false));
 
+    const baseLikeCount = (typeof lesson?.likesCount === 'number' ? lesson.likesCount : undefined) ?? (Array.isArray(lesson?.likes) ? lesson.likes.length : 0);
+    const baseSaveCount = (typeof lesson?.savedCount === 'number' ? lesson.savedCount : undefined) ?? 0;
+
+    const [localLikeCount, setLocalLikeCount] = useState(() => (_id ? getLessonCount(likeCountKey, _id) : 0));
+    const [localSaveCount, setLocalSaveCount] = useState(() => (_id ? getLessonCount(saveCountKey, _id) : 0));
+
+    const displayLikeCount = baseLikeCount + localLikeCount;
+    const displaySaveCount = baseSaveCount + localSaveCount;
+
     const handleToggleLike = () => {
         if (!_id) return;
-        const next = toggleIdInSet(likedKey, _id);
+        const next = toggleReactionWithCount({ setKey: likedKey, countKey: likeCountKey, id: _id });
         setLiked(next);
+        setLocalLikeCount(getLessonCount(likeCountKey, _id));
         Swal.fire({
             position: "top-end",
             icon: "success",
@@ -37,8 +48,9 @@ const LessonDetails = () => {
 
     const handleToggleSave = () => {
         if (!_id) return;
-        const next = toggleIdInSet(savedKey, _id);
+        const next = toggleReactionWithCount({ setKey: savedKey, countKey: saveCountKey, id: _id });
         setSaved(next);
+        setLocalSaveCount(getLessonCount(saveCountKey, _id));
         Swal.fire({
             position: "top-end",
             icon: "success",
@@ -114,10 +126,10 @@ const LessonDetails = () => {
             <div className="flex justify-between items-center">
                 <div className="flex gap-4">
                     <button onClick={handleToggleLike} className={`btn gap-2 rounded-full ${liked ? 'btn-error text-white' : 'btn-outline btn-error'}`}>
-                        <FaHeart /> {liked ? 'Liked' : 'Like'}
+                        <FaHeart /> {liked ? 'Liked' : 'Like'} ({displayLikeCount})
                     </button>
                     <button onClick={handleToggleSave} className={`btn gap-2 rounded-full ${saved ? 'btn-primary text-white' : 'btn-outline btn-primary'}`}>
-                        <FaBookmark /> {saved ? 'Saved' : 'Save'}
+                        <FaBookmark /> {saved ? 'Saved' : 'Save'} ({displaySaveCount})
                     </button>
                 </div>
             </div>

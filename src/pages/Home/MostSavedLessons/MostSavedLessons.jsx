@@ -1,10 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
 import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
 import { FaBookmark, FaHeart, FaUser } from "react-icons/fa";
+import { getCountKeys, getLessonCount } from "../../../utils/lessonReactions";
 
 const MostSavedLessons = () => {
     const axiosPublic = useAxiosPublic();
+    const [tick, setTick] = useState(0);
+
+    useEffect(() => {
+        const handler = () => setTick((t) => t + 1);
+        window.addEventListener('reflecthub:reactions-changed', handler);
+        return () => window.removeEventListener('reflecthub:reactions-changed', handler);
+    }, []);
+
+    const { likeCountKey, saveCountKey } = useMemo(() => getCountKeys(), []);
 
     const { data: lessons = [], isPending } = useQuery({
         queryKey: ['lessons'],
@@ -40,10 +51,17 @@ const MostSavedLessons = () => {
 
     const publicLessons = lessons.filter(l => (l?.privacy || '').toLowerCase() === 'public');
 
-    const topSaved = publicLessons
-        .map(l => ({ ...l, _savedScore: getSavedScore(l) }))
-        .sort((a, b) => (b._savedScore || 0) - (a._savedScore || 0))
-        .slice(0, 6);
+    const topSaved = useMemo(() => {
+        return publicLessons
+            .map(l => ({
+                ...l,
+                _localSave: l?._id ? getLessonCount(saveCountKey, l._id) : 0,
+                _localLike: l?._id ? getLessonCount(likeCountKey, l._id) : 0,
+                _savedScore: getSavedScore(l) + (l?._id ? getLessonCount(saveCountKey, l._id) : 0) + (tick * 0)
+            }))
+            .sort((a, b) => (b._savedScore || 0) - (a._savedScore || 0))
+            .slice(0, 6);
+    }, [publicLessons, tick, likeCountKey, saveCountKey]);
 
     return (
         <div className="py-24 max-w-screen-2xl mx-auto px-6 font-sans">
@@ -96,7 +114,7 @@ const MostSavedLessons = () => {
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <FaHeart size={10} />
-                                        <span>{Array.isArray(lesson?.likes) ? lesson.likes.length : (lesson?.likesCount || 0)}</span>
+                                        <span>{(Array.isArray(lesson?.likes) ? lesson.likes.length : (lesson?.likesCount || 0)) + (lesson._localLike || 0)}</span>
                                     </div>
                                 </div>
 

@@ -1,9 +1,11 @@
-import { useContext } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useLoaderData, Link } from "react-router-dom";
 import { FaCalendarAlt, FaUserCircle, FaHeart, FaBookmark, FaLock, FaCrown } from "react-icons/fa";
 import usePremium from "../../hooks/usePremium"; 
 import useAdmin from "../../hooks/useAdmin"; // 👈 IMPORT ADMIN HOOK
 import { AuthContext } from "../../contexts/AuthContext"; 
+import Swal from "sweetalert2";
+import { getStorageKeys, isIdInSet, toggleIdInSet } from "../../utils/lessonReactions";
 
 const LessonDetails = () => {
     const lesson = useLoaderData(); 
@@ -13,7 +15,38 @@ const LessonDetails = () => {
     // 👇 GET ADMIN STATUS
     const [isAdmin, isAdminLoading] = useAdmin(); 
 
-    const { title, description, author, category, tone, photoURL, createdAt, access } = lesson;
+    const { title, description, author, category, tone, photoURL, createdAt, access, _id } = lesson;
+
+    const { likedKey, savedKey } = useMemo(() => getStorageKeys(user?.email), [user?.email]);
+
+    const [liked, setLiked] = useState(() => (_id ? isIdInSet(likedKey, _id) : false));
+    const [saved, setSaved] = useState(() => (_id ? isIdInSet(savedKey, _id) : false));
+
+    const handleToggleLike = () => {
+        if (!_id) return;
+        const next = toggleIdInSet(likedKey, _id);
+        setLiked(next);
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: next ? "Liked" : "Unliked",
+            showConfirmButton: false,
+            timer: 900
+        });
+    };
+
+    const handleToggleSave = () => {
+        if (!_id) return;
+        const next = toggleIdInSet(savedKey, _id);
+        setSaved(next);
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: next ? "Saved" : "Removed from saved",
+            showConfirmButton: false,
+            timer: 900
+        });
+    };
 
     if (isPremiumLoading || isAdminLoading) {
         return <div className="flex justify-center items-center h-screen"><span className="loading loading-spinner loading-lg text-primary"></span></div>;
@@ -80,11 +113,11 @@ const LessonDetails = () => {
             <div className="divider my-10"></div>
             <div className="flex justify-between items-center">
                 <div className="flex gap-4">
-                    <button className="btn btn-outline btn-error gap-2 rounded-full">
-                        <FaHeart /> Like
+                    <button onClick={handleToggleLike} className={`btn gap-2 rounded-full ${liked ? 'btn-error text-white' : 'btn-outline btn-error'}`}>
+                        <FaHeart /> {liked ? 'Liked' : 'Like'}
                     </button>
-                    <button className="btn btn-outline btn-primary gap-2 rounded-full">
-                        <FaBookmark /> Save
+                    <button onClick={handleToggleSave} className={`btn gap-2 rounded-full ${saved ? 'btn-primary text-white' : 'btn-outline btn-primary'}`}>
+                        <FaBookmark /> {saved ? 'Saved' : 'Save'}
                     </button>
                 </div>
             </div>

@@ -15,6 +15,7 @@ import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import UpdateLesson from "../pages/Dashboard/UpdateLesson/UpdateLesson";
 import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
 import ManageLessons from "../pages/Dashboard/ManageLessons/ManageLessons";
+import MyFavorites from "../pages/Dashboard/MyFavorites/MyFavorites";
 import Community from "../pages/Community/Community";
 import NotFound from "../pages/NotFound/NotFound";
 export const router = createBrowserRouter([
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
       {
         path: "my-lessons",
         element: <MyLessons />
+      },
+      {
+        path: "my-favorites",
+        element: <MyFavorites />
       },
       {
         path: "profile",

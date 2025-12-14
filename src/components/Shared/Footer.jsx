@@ -9,7 +9,7 @@ const Footer = () => {
                 <div>
                     <h2 className="text-2xl font-bold text-primary mb-4">ReflectHub</h2>
                     <p className="text-gray-400 text-sm leading-relaxed">
-                        A community-driven platform to share wisdom...
+                        Preserving wisdom, inspiring growth,<br></br> and connecting hearts through shared <br></br> life experiences.
                     </p>
                 </div>
                 {/* Links */}

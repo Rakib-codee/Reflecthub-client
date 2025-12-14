@@ -15,7 +15,7 @@ import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import UpdateLesson from "../pages/Dashboard/UpdateLesson/UpdateLesson";
 import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
 import Community from "../pages/Community/Community";
-
+import NotFound from "../pages/NotFound/NotFound";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -42,6 +42,7 @@ export const router = createBrowserRouter([
         element: <Community></Community>
     }
     ],
+    
   },
   {
     path: "dashboard",
@@ -82,5 +83,9 @@ export const router = createBrowserRouter([
       }
 
     ]
+  },
+  {
+    path: "*",
+    element: <NotFound />
   }
 ]);

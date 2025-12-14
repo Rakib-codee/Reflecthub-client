@@ -1,14 +1,34 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { FaBook, FaHome, FaList, FaPlus, FaUser, FaUsers, FaCrown } from "react-icons/fa";
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import useAdmin from "../hooks/useAdmin"; // Import the Admin Hook
+import usePremium from "../hooks/usePremium";
+import Swal from "sweetalert2";
 
 const Dashboard = () => {
     const { user } = useContext(AuthContext);
 
     // 👇 GET REAL ADMIN STATUS FROM DB
     const [isAdmin] = useAdmin();
+    const [isPremium, isPremiumLoading] = usePremium();
+    const navigate = useNavigate();
+
+    const handleMembershipClick = () => {
+        if (isPremiumLoading) return;
+
+        if (user && isPremium) {
+            Swal.fire({
+                icon: "success",
+                title: "You’re already Premium",
+                text: "Thank you for supporting ReflectHub. Enjoy unlimited access!",
+                confirmButtonColor: "#7c3aed",
+            });
+            return;
+        }
+
+        navigate("/payment");
+    };
 
     return (
         <div className="drawer lg:drawer-open">
@@ -39,6 +59,7 @@ const Dashboard = () => {
                             <li className="menu-title text-gray-400 mt-2">Admin Area</li>
                             <li><NavLink to="/dashboard/admin-home"><FaHome /> Admin Home</NavLink></li>
                             <li><NavLink to="/dashboard/users"><FaUsers /> Manage Users</NavLink></li>
+                            <li><NavLink to="/dashboard/my-lessons"><FaList /> My Lessons</NavLink></li>
                             <li><NavLink to="/dashboard/profile"><FaUser /> Admin Profile</NavLink></li>
                         </>
                     ) : (
@@ -58,7 +79,13 @@ const Dashboard = () => {
                     {/* === SHARED MENU === */}
                     <li><NavLink to="/"><FaHome /> Home</NavLink></li>
                     <li><NavLink to="/lessons"><FaBook /> Public Lessons</NavLink></li>
-                    <li><NavLink to="/payment"><FaCrown /> Membership</NavLink></li>
+                    {!isAdmin && (
+                        <li>
+                            <button type="button" onClick={handleMembershipClick} className="flex items-center gap-2">
+                                <FaCrown /> Membership
+                            </button>
+                        </li>
+                    )}
                 </ul>
 
             </div>

@@ -14,7 +14,7 @@ const usePremium = () => {
         queryKey: ['isPremium', email],
         enabled: !loading && !!user?.email, // Only run if user is logged in
         queryFn: async () => {
-            const res = await axiosPublic.get(`/users/${email}`);
+            const res = await axiosPublic.get(`/users/${encodeURIComponent(email)}`);
             return Boolean(res.data?.isPremium);
         }
     });

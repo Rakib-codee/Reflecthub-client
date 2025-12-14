@@ -1,9 +1,15 @@
 import { useContext } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
+import useAdmin from "../../hooks/useAdmin";
+import usePremium from "../../hooks/usePremium";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
     const { user, logOut } = useContext(AuthContext);
+    const [isAdmin, isAdminLoading] = useAdmin();
+    const [isPremium, isPremiumLoading] = usePremium();
+    const navigate = useNavigate();
 
     const handleLogOut = () => {
         logOut()
@@ -11,13 +17,40 @@ const Navbar = () => {
             .catch(error => console.log(error));
     }
 
+    const handleMembershipClick = () => {
+        if (isPremiumLoading) return;
+
+        if (user && isPremium) {
+            Swal.fire({
+                icon: "success",
+                title: "You’re already Premium",
+                text: "Thank you for supporting ReflectHub. Enjoy unlimited access!",
+                confirmButtonColor: "#7c3aed",
+            });
+            return;
+        }
+
+        navigate("/payment");
+    };
+
     const navOptions = <>
         <li><NavLink to="/">Home</NavLink></li>
         <li><NavLink to="/lessons">Lessons</NavLink></li>
         <li><NavLink to="/community">Community</NavLink></li>
-        <li><NavLink to="/payment">Membership</NavLink></li>
-        {/* Only show 'My Lessons' if user is logged in */}
-        {user && <li><NavLink to="/dashboard/my-lessons">My Lessons</NavLink></li>} 
+        {!isAdminLoading && !isAdmin && (
+            <li>
+                <button type="button" onClick={handleMembershipClick}>Membership</button>
+            </li>
+        )}
+        {/* Only show 'My Lessons' for normal users */}
+        {user && !isAdminLoading && !isAdmin && <li><NavLink to="/dashboard/my-lessons">My Lessons</NavLink></li>}
+        {/* Admin quick links */}
+        {user && !isAdminLoading && isAdmin && (
+            <>
+                <li><NavLink to="/dashboard/users">Manage Users</NavLink></li>
+                <li><NavLink to="/dashboard/add-lesson">Add Lesson</NavLink></li>
+            </>
+        )}
     </>
 
     return (

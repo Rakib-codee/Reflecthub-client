@@ -6,7 +6,7 @@ const Main = () => {
     return (
         <div>
             <Navbar />
-            <div className="min-h-screen pt-20"> {/* pt-20 to avoid navbar overlap */}
+            <div className="min-h-screen pt-32 bg-gray-50">  
                 <Outlet />
             </div>
             <Footer /> 

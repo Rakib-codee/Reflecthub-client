@@ -4,15 +4,14 @@ const Footer = () => {
     return (
         <footer className="bg-gray-900 text-white py-10 mt-20">
             <div className="max-w-screen-2xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-                
-                {/* Brand */}
+
+                {/* Brand Section */}
                 <div>
-                    <h2 className="text-2xl font-bold text-primary mb-4">Digital Life Lessons</h2>
+                    <h2 className="text-2xl font-bold text-primary mb-4">ReflectHub</h2>
                     <p className="text-gray-400 text-sm leading-relaxed">
-                        A community-driven platform to share wisdom, learn from others' experiences, and grow together.
+                        A community-driven platform to share wisdom...
                     </p>
                 </div>
-
                 {/* Links */}
                 <div>
                     <h3 className="text-lg font-bold mb-4">Quick Links</h3>
@@ -36,9 +35,9 @@ const Footer = () => {
                 </div>
 
             </div>
-            
-            <div className="text-center text-gray-600 text-sm mt-10 pt-6 border-t border-gray-800">
-                &copy; 2024 Digital Life Lessons. All rights reserved.
+
+            <div className="text-center text-gray-600 ...">
+                &copy; 2024 ReflectHub. All rights reserved.
             </div>
         </footer>
     );

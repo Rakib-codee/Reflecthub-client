@@ -1,30 +1,40 @@
+import { useContext } from "react";
 import { useLoaderData, Link } from "react-router-dom";
 import { FaCalendarAlt, FaUserCircle, FaHeart, FaBookmark, FaLock, FaCrown } from "react-icons/fa";
-import usePremium from "../../hooks/usePremium"; // Make sure this path is correct
+import usePremium from "../../hooks/usePremium"; 
+import useAdmin from "../../hooks/useAdmin"; // 👈 IMPORT ADMIN HOOK
+import { AuthContext } from "../../providers/AuthProvider"; 
 
 const LessonDetails = () => {
-    // 1. Get Data
     const lesson = useLoaderData(); 
-    const [isPremium, isPremiumLoading] = usePremium(); // Check User Status
+    const { user } = useContext(AuthContext); 
+    const [isPremium, isPremiumLoading] = usePremium(); 
+    
+    // 👇 GET ADMIN STATUS
+    const [isAdmin, isAdminLoading] = useAdmin(); 
 
     const { title, description, author, category, tone, photoURL, createdAt, access } = lesson;
 
-    // 2. Loading State (Wait for user status check)
-    if (isPremiumLoading) {
+    if (isPremiumLoading || isAdminLoading) {
         return <div className="flex justify-center items-center h-screen"><span className="loading loading-spinner loading-lg text-primary"></span></div>;
     }
 
-    // 🔒 3. LOCK LOGIC (The New Part)
-    // If Lesson is Premium AND User is NOT Premium -> Block Access
-    if (access === 'Premium' && !isPremium) {
+    // 🔒 LOCK LOGIC UPDATE
+    // Lock IF: 
+    // 1. Lesson is Premium
+    // 2. AND User is NOT Premium
+    // 3. AND User is NOT Admin (New Add) 👈
+    // 4. AND User is NOT the Author 
+    
+    if (access === 'Premium' && !isPremium && !isAdmin && user?.email !== author?.email) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 mt-10">
                 <div className="bg-gray-100 p-10 rounded-3xl border border-gray-200 shadow-sm max-w-2xl w-full">
                     <FaLock className="text-6xl text-gray-400 mb-6 mx-auto" />
                     <h2 className="text-4xl font-bold text-gray-800">Premium Content</h2>
                     <p className="text-lg text-gray-600 mt-4 mb-8">
-                        This lesson contains exclusive insights locked for Premium members. 
-                        Upgrade to access unlimited wisdom.
+                        This lesson is locked. <br/>
+                        <span className="text-sm">Only Premium Members and the Author can view this.</span>
                     </p>
                     <Link to="/payment" className="btn btn-primary btn-lg text-white gap-2 rounded-full px-10 shadow-lg hover:shadow-xl transition-all">
                         <FaCrown className="text-yellow-300" /> Upgrade Now - ৳1500
@@ -34,12 +44,11 @@ const LessonDetails = () => {
         );
     }
 
-    // 🔓 4. STANDARD UI (Your Original Code for Unlocked Users)
+    // 🔓 STANDARD UI ...
     const date = new Date(createdAt).toLocaleDateString();
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-10">
-            
             {/* Header Section */}
             <div className="text-center mb-10 space-y-4">
                 <div className="flex justify-center gap-2 mb-4">
@@ -65,7 +74,6 @@ const LessonDetails = () => {
             {/* Content Section */}
             <div className="prose prose-lg max-w-none text-gray-700 leading-8">
                 <p className="whitespace-pre-wrap">{description}</p>
-                {/* whitespace-pre-wrap preserves paragraphs/line breaks from the textarea */}
             </div>
 
             {/* Interaction Buttons */}
@@ -79,11 +87,7 @@ const LessonDetails = () => {
                         <FaBookmark /> Save
                     </button>
                 </div>
-                <div className="text-gray-400 italic text-sm">
-                    Keep learning, keep growing.
-                </div>
             </div>
-
         </div>
     );
 };

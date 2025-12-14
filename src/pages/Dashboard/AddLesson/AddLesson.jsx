@@ -4,7 +4,8 @@ import Swal from "sweetalert2";
 import { useContext } from "react";
 import { AuthContext } from "../../../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import usePremium from "../../../hooks/usePremium"; // Import the hook
+import usePremium from "../../../hooks/usePremium"; 
+import useAdmin from "../../../hooks/useAdmin"; // Import Admin Hook
 
 const AddLesson = () => {
     const { register, handleSubmit, reset } = useForm();
@@ -12,7 +13,8 @@ const AddLesson = () => {
     const axiosPublic = useAxiosPublic();
     const navigate = useNavigate();
     
-    // 👇 GET REAL PREMIUM STATUS HERE
+    // 👇 GET STATUS (Premium OR Admin)
+    const [isAdmin] = useAdmin(); 
     const [isPremium] = usePremium(); 
 
     const onSubmit = async (data) => {
@@ -30,7 +32,7 @@ const AddLesson = () => {
                 email: user?.email,
                 photo: user?.photoURL
             },
-            createdAt: new Date(), // We store date to sort later
+            createdAt: new Date(), 
             likes: [],
             likesCount: 0
         }
@@ -104,7 +106,7 @@ const AddLesson = () => {
                         </select>
                     </div>
 
-                    {/* Access Level (Premium Check) */}
+                    {/* Access Level (Updated Logic for Admin/Premium) */}
                     <div className="form-control w-1/2">
                         <label className="label"><span className="label-text font-semibold">Access Level</span></label>
                         <select 
@@ -114,12 +116,14 @@ const AddLesson = () => {
                         >
                             <option value="Free">Free</option>
                             
-                            {/* 👇 DYNAMICALLY DISABLE BASED ON DB STATUS */}
-                            <option value="Premium" disabled={!isPremium}>
-                                Premium {isPremium ? "" : "(Upgrade Required)"}
+                            {/* 👇 Enable if User is Premium OR Admin */}
+                            <option value="Premium" disabled={!isPremium && !isAdmin}>
+                                Premium {(isPremium || isAdmin) ? "" : "(Upgrade Required)"}
                             </option>
                         </select>
-                        {!isPremium && <span className="text-xs text-red-500 mt-1">Upgrade to Premium to create paid content.</span>}
+                        
+                        {/* Show warning only if NEITHER Premium NOR Admin */}
+                        {!isPremium && !isAdmin && <span className="text-xs text-red-500 mt-1">Upgrade to Premium to create paid content.</span>}
                     </div>
                 </div>
 

@@ -13,6 +13,7 @@ import Payment from "../pages/Payment/Payment";
 import Profile from "../pages/Dashboard/Profile/Profile";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import UpdateLesson from "../pages/Dashboard/UpdateLesson/UpdateLesson";
+import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
 
 export const router = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ export const router = createBrowserRouter([
         path: "update-lesson/:id",
         element: <UpdateLesson />,
         loader: ({ params }) => fetch(`http://localhost:3000/lessons/${params.id}`)
+      },
+      {
+        path: "admin-home",
+        element: <AdminHome></AdminHome>
       }
 
     ]

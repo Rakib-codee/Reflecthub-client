@@ -18,29 +18,43 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const googleProvider = new GoogleAuthProvider();
+    const [popupLoading, setPopupLoading] = useState(false);
 
     // Create new user with email & password
     const createUser = (email, password) => {
         setLoading(true);
-        return createUserWithEmailAndPassword(auth, email, password);
+        return createUserWithEmailAndPassword(auth, email, password)
+            .finally(() => setLoading(false));
     }
 
     // Sign in existing user with email & password
     const signIn = (email, password) => {
         setLoading(true);
-        return signInWithEmailAndPassword(auth, email, password);
+        return signInWithEmailAndPassword(auth, email, password)
+            .finally(() => setLoading(false));
     }
 
     // Sign in with Google popup
     const googleSignIn = () => {
+        if (popupLoading) {
+            return Promise.reject({ code: "auth/cancelled-popup-request", message: "Popup request already in progress" });
+        }
+
         setLoading(true);
-        return signInWithPopup(auth, googleProvider);
+        setPopupLoading(true);
+
+        return signInWithPopup(auth, googleProvider)
+            .finally(() => {
+                setPopupLoading(false);
+                setLoading(false);
+            });
     }
 
     // Logout
     const logOut = () => {
         setLoading(true);
-        return signOut(auth);
+        return signOut(auth)
+            .finally(() => setLoading(false));
     }
 
     // Update user profile

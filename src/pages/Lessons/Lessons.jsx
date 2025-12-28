@@ -9,6 +9,7 @@ const Lessons = () => {
     const [displayLessons, setDisplayLessons] = useState([]); // Used for filtering
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
     
     const axiosPublic = useAxiosPublic();
 
@@ -17,12 +18,32 @@ const Lessons = () => {
     const [isPremiumUser] = usePremium(); 
 
     useEffect(() => {
-        axiosPublic.get('/lessons')
+        let isMounted = true;
+        setLoading(true);
+        setError('');
+
+        axiosPublic
+            .get('/lessons')
             .then(res => {
-                setLessons(res.data);
-                setDisplayLessons(res.data);
-                setLoading(false);
+                if (!isMounted) return;
+                const data = Array.isArray(res.data) ? res.data : [];
+                setLessons(data);
+                setDisplayLessons(data);
             })
+            .catch(() => {
+                if (!isMounted) return;
+                setLessons([]);
+                setDisplayLessons([]);
+                setError('Failed to load lessons. Please try again later.');
+            })
+            .finally(() => {
+                if (!isMounted) return;
+                setLoading(false);
+            });
+
+        return () => {
+            isMounted = false;
+        };
     }, [axiosPublic]);
 
     // Handle Search
@@ -46,6 +67,16 @@ const Lessons = () => {
     }
 
     if (loading) return <div className="text-center mt-20"><span className="loading loading-bars loading-lg text-primary"></span></div>;
+
+    if (error) {
+        return (
+            <div className="max-w-screen-2xl mx-auto px-4 py-10">
+                <div className="max-w-xl mx-auto bg-white border border-purple-100 rounded-xl p-6 shadow">
+                    <p className="text-red-600 text-sm">{error}</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-screen-2xl mx-auto px-4 py-10">
